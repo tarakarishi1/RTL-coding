@@ -11,6 +11,8 @@ module sr_latch_tb();
         end
     end
     initial begin
+        $display("S | R | Q | Qn");
+        $display("--------------");
         $monitor("%b | %b | %b | %b ", S,R,Q,Qn);
     end
 endmodule
