@@ -1,45 +1,17 @@
-// module ms_jk_ff_tb();
-//     logic clk = 0,J,K,Q,Qn;
-
-//     ms_jk_ff dut(clk, J,K, Q, Qn);
-
-//     always #5 clk <= ~clk;
-
-// initial begin
-//     repeat(20) begin
-//         #2 J = $random;
-//         K = $random;
-//     end
-// end
-
-//  initial begin
-//         $display("T | J | K | Q | Qn");
-//         $display("------------------");
-//         $monitor("%d | %b | %b | %b | %b ",$time, J,K,Q,Qn);
-//     end
-
-// initial begin
-//     $dumpfile("dump.vcd");
-//     $dumpvars;
-// end
-
-// initial begin
-//     #250 $finish;
-// end    
-
-// endmodule
-
-
-
 `timescale 1ns/1ps
 
 module ms_jk_ff_tb;
 
-    reg clk;
-    reg J, K;
-    wire Q, Qn;
+    // --------------------------------------------------------------------
+    // DUT signals
+    // --------------------------------------------------------------------
+    logic clk;
+    logic J, K;
+    logic Q, Qn;
 
+    // --------------------------------------------------------------------
     // DUT instantiation
+    // --------------------------------------------------------------------
     ms_jk_ff dut (
         .clk(clk),
         .J  (J),
@@ -48,67 +20,76 @@ module ms_jk_ff_tb;
         .Qn (Qn)
     );
 
-    // Clock: 10 ns period
-    initial clk = 1'b0;
+    // --------------------------------------------------------------------
+    // Clock generation (10 ns period)
+    // --------------------------------------------------------------------
+    initial clk = 0;
     always #5 clk = ~clk;
 
-    // Task to apply one JK combination for one full clock cycle
-    task apply_jk(input [1:0] jk);
+    // --------------------------------------------------------------------
+    // Task to apply J,K for one full clock cycle
+    // --------------------------------------------------------------------
+    task automatic apply_jk(input logic j, input logic k);
     begin
-        {J, K} = jk;
-        @(posedge clk);   // master samples J,K
-        @(negedge clk);   // slave updates Q,Qn
-        #1;               // small delay for monitor
+        J = j;
+        K = k;
+        @(posedge clk);   // master latch samples J,K
+        @(negedge clk);   // slave latch updates Q,Qn
+        #1;               // small delay for monitor printing
     end
     endtask
 
-
+    // --------------------------------------------------------------------
+    // Test sequence
+    // --------------------------------------------------------------------
     initial begin
-
-        // Init
         J = 0;
         K = 0;
-        @(negedge clk);   // let initial state settle
+
+        @(negedge clk);
 
         $display(" time | J K | Q Qn");
-        $display("-------------------");
+        $display("----------------------");
         $monitor("%4t | %b %b | %b %b", $time, J, K, Q, Qn);
 
-        // 1) Hold (00) – should keep whatever Q is
-        apply_jk(2'b00);
-        apply_jk(2'b00);
+        // Hold
+        apply_jk(0,0);
+        apply_jk(0,0);
 
-        // 2) Reset (01): Q=0, Qn=1
-        apply_jk(2'b01);
+        // Reset
+        apply_jk(0,1);
 
-        // 3) Hold again
-        apply_jk(2'b00);
+        // Hold
+        apply_jk(0,0);
 
-        // 4) Set (10): Q=1, Qn=0
-        apply_jk(2'b10);
+        // Set
+        apply_jk(1,0);
 
-        // 5) Hold again
-        apply_jk(2'b00);
+        // Hold
+        apply_jk(0,0);
 
-        // 6) Toggle (11): Q flips each cycle
-        apply_jk(2'b11);  // toggle 1
-        apply_jk(2'b11);  // toggle 2
-        apply_jk(2'b11);  // toggle 3
-        apply_jk(2'b11);  // toggle 4
+        // Toggle multiple times
+        apply_jk(1,1);
+        apply_jk(1,1);
+        apply_jk(1,1);
+        apply_jk(1,1);
 
-        // 7) Mix sequence: Reset -> Set -> Toggle -> Hold
-        apply_jk(2'b01);  // Reset
-        apply_jk(2'b10);  // Set
-        apply_jk(2'b11);  // Toggle
-        apply_jk(2'b00);  // Hold
+        // Mixed sequence
+        apply_jk(0,1);  // R
+        apply_jk(1,0);  // S
+        apply_jk(1,1);  // Toggle
+        apply_jk(0,0);  // Hold
 
         #10;
         $finish;
     end
 
+    // --------------------------------------------------------------------
     // VCD dump
+    // --------------------------------------------------------------------
     initial begin
         $dumpfile("ms_jk_ff.vcd");
         $dumpvars(0, ms_jk_ff_tb);
     end
+
 endmodule

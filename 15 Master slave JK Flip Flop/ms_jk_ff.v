@@ -18,6 +18,7 @@
 //         endcase
 //     end
 
+
 //     always @(negedge clk ) begin
 //         case ({Js,Ks})
 //             2'b00: {Q,Qn} <= {Q,Qn};   // Hold state
@@ -27,6 +28,7 @@
 //         endcase
 //     end
 // endmodule
+
 
 module ms_jk_ff(
     input       clk,
