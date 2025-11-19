@@ -1,0 +1,52 @@
+# ---- Simulation dump files ----
+*.vcd
+*.vvp
+*.wlf
+*.fst
+*.wdb
+*.saif
+*.sdf
+*.wlf
+*.log
+*.out
+*.simout
+*.sim
+
+# ---- ModelSim / QuestaSim ----
+work/
+transcript
+vsim.wlf
+modelsim.ini
+*.ucdb
+
+# ---- Vivado / Xilinx ----
+*.jou
+*.str
+*.rpt
+*.dmp
+*.pb
+xsim.dir/
+*.cache/
+*.hw/
+*.runs/
+*.sim/
+*.ip_user_files/
+
+# ---- VS Code junk ----
+.vscode/
+.history/
+*.code-workspace
+
+# ---- OS junk ----
+.DS_Store
+Thumbs.db
+
+# ---- Build files ----
+*.o
+*.obj
+*.exe
+*.bin
+*.elf
+tmp/
+temp/
+.cache/
