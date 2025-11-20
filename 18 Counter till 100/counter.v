@@ -2,7 +2,7 @@ module counter(
     input clk,rst,
     output reg [6:0]cnt
 );
-    always @(posedge clk or posedge rst ) begin
+    always @(posedge clk or posedge rst ) begin  // Do not put rst, put posedge rst.
         if (rst || cnt == 7'b1100011) begin
             cnt <= 7'b0;
         end

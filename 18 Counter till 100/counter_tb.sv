@@ -15,10 +15,8 @@ module counter_tb();
         #15 rst = 0;
         #200 rst = 1;
         #20 rst = 0;
-
-
-        
     end
+
     initial begin
         $dumpfile("d_ff_dump.vcd");
         $dumpvars;
@@ -31,8 +29,6 @@ module counter_tb();
         $monitor("%4t   | %b  | %d ", $time, rst, cnt);
         #1500 $finish;
     end
-
-
-
+    
 endmodule
 
