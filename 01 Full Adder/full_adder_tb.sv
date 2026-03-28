@@ -12,6 +12,7 @@ module full_adder_tb();
       else
         $display("FAIL: %0d,%0d, %0d", i1, i2, i3);
     end
+    $finish;
   end
   
 endmodule
